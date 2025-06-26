@@ -40,7 +40,11 @@ struct PragmaPlatform {
 };
 
 struct PragmaDatabaseSize {
-	static void RegisterFunction(BuiltinFunctions &set);
+        static void RegisterFunction(BuiltinFunctions &set);
+};
+
+struct PragmaTableSize {
+        static void RegisterFunction(BuiltinFunctions &set);
 };
 
 struct DuckDBSchemasFun {

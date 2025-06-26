@@ -182,7 +182,11 @@ string PragmaCopyDatabase(ClientContext &context, const FunctionParameters &para
 }
 
 string PragmaDatabaseSize(ClientContext &context, const FunctionParameters &parameters) {
-	return "SELECT * FROM pragma_database_size();";
+        return "SELECT * FROM pragma_database_size();";
+}
+
+string PragmaTableSize(ClientContext &context, const FunctionParameters &parameters) {
+        return StringUtil::Format("SELECT * FROM pragma_table_size('%s');", parameters.values[0].ToString());
 }
 
 string PragmaStorageInfo(ClientContext &context, const FunctionParameters &parameters) {
@@ -199,8 +203,9 @@ string PragmaUserAgent(ClientContext &context, const FunctionParameters &paramet
 
 void PragmaQueries::RegisterFunction(BuiltinFunctions &set) {
 	set.AddFunction(PragmaFunction::PragmaCall("table_info", PragmaTableInfo, {LogicalType::VARCHAR}));
-	set.AddFunction(PragmaFunction::PragmaCall("storage_info", PragmaStorageInfo, {LogicalType::VARCHAR}));
-	set.AddFunction(PragmaFunction::PragmaCall("metadata_info", PragmaMetadataInfo, {}));
+        set.AddFunction(PragmaFunction::PragmaCall("storage_info", PragmaStorageInfo, {LogicalType::VARCHAR}));
+        set.AddFunction(PragmaFunction::PragmaCall("table_size", PragmaTableSize, {LogicalType::VARCHAR}));
+        set.AddFunction(PragmaFunction::PragmaCall("metadata_info", PragmaMetadataInfo, {}));
 	set.AddFunction(PragmaFunction::PragmaStatement("show_tables", PragmaShowTables));
 	set.AddFunction(PragmaFunction::PragmaStatement("show_tables_expanded", PragmaShowTablesExpanded));
 	set.AddFunction(PragmaFunction::PragmaStatement("show_databases", PragmaShowDatabases));

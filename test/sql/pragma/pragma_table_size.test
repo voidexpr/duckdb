@@ -1,0 +1,17 @@
+# name: test/sql/pragma/pragma_table_size.test
+# description: Test PRAGMA table_size
+# group: [pragma]
+
+statement ok
+CREATE TABLE tbl(i INTEGER);
+
+statement ok
+INSERT INTO tbl SELECT i FROM range(1000);
+
+statement ok
+CHECKPOINT;
+
+query I
+SELECT total_blocks > 0 FROM pragma_table_size('tbl');
+----
+true
