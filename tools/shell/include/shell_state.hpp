@@ -50,8 +50,9 @@ enum class RenderMode : uint32_t {
 	BOX,       /* Unicode box-drawing characters */
 	LATEX,     /* Latex tabular formatting */
 	TRASH,     /* Discard output */
-	JSONLINES, /* Output JSON Lines */
-	DUCKBOX    /* Unicode box drawing - using DuckDB's own renderer */
+        JSONLINES, /* Output JSON Lines */
+        DUCKBOX,   /* Unicode box drawing - using DuckDB's own renderer */
+        DUCKBOXPLUS /* Same as DUCKBOX with defaults enabled */
 };
 
 enum class PrintOutput { STDOUT, STDERR };

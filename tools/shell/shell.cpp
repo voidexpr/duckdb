@@ -894,7 +894,7 @@ static char quoteChar(const char *zName) {
 
 static const char *modeDescr[] = {"line",     "column", "list",    "semi",  "html",        "insert",    "quote",
                                   "tcl",      "csv",    "explain", "ascii", "prettyprint", "eqp",       "json",
-                                  "markdown", "table",  "box",     "latex", "trash",       "jsonlines", "duckbox"};
+                                  "markdown", "table",  "box",     "latex", "trash",       "jsonlines", "duckbox", "duckboxplus"};
 
 /*
 ** These are the column/row/line separators used by the various
@@ -1680,7 +1680,7 @@ public:
 ** Run a prepared statement
 */
 void ShellState::ExecutePreparedStatement(sqlite3_stmt *pStmt) {
-	if (cMode == RenderMode::DUCKBOX) {
+        if (cMode == RenderMode::DUCKBOX || cMode == RenderMode::DUCKBOXPLUS) {
 		size_t max_rows = this->max_rows;
 		size_t max_width = this->max_width;
 		if (!outfile.empty() && outfile[0] != '|') {
@@ -2211,6 +2211,7 @@ static const char *azHelp[] = {
     "     csv       Comma-separated values",
     "     column    Output in columns.  (See .width)",
     "     duckbox   Tables with extensive features",
+    "     duckboxplus Same as duckbox with defaults enabled",
     "     html      HTML <table> code",
     "     insert    SQL insert statements for TABLE",
     "     json      Results in a JSON array",
@@ -3294,8 +3295,10 @@ bool ShellState::SetOutputMode(const char *mode_str, const char *tbl_name) {
 		mode = RenderMode::TABLE;
 	} else if (c2 == 'b' && strncmp(mode_str, "box", n2) == 0) {
 		mode = RenderMode::BOX;
-	} else if (c2 == 'd' && strncmp(mode_str, "duckbox", n2) == 0) {
-		mode = RenderMode::DUCKBOX;
+        } else if (c2 == 'd' && strncmp(mode_str, "duckbox", n2) == 0) {
+                mode = RenderMode::DUCKBOX;
+        } else if (c2 == 'd' && strncmp(mode_str, "duckboxplus", n2) == 0) {
+                mode = RenderMode::DUCKBOXPLUS;
 	} else if (c2 == 'j' && strncmp(mode_str, "json", n2) == 0) {
 		mode = RenderMode::JSON;
 	} else if (c2 == 'l' && strncmp(mode_str, "latex", n2) == 0) {
@@ -3305,9 +3308,9 @@ bool ShellState::SetOutputMode(const char *mode_str, const char *tbl_name) {
 	} else if (c2 == 'j' && strncmp(mode_str, "jsonlines", n2) == 0) {
 		mode = RenderMode::JSONLINES;
 	} else {
-		raw_printf(stderr, "Error: mode should be one of: "
-		                   "ascii box column csv duckbox html insert json jsonlines latex line "
-		                   "list markdown quote table tabs tcl trash \n");
+                raw_printf(stderr, "Error: mode should be one of: "
+                                   "ascii box column csv duckbox duckboxplus html insert json jsonlines latex line "
+                                   "list markdown quote table tabs tcl trash \n");
 		return false;
 	}
 	cMode = mode;
@@ -4733,7 +4736,7 @@ static void verify_uninitialized(void) {
 ** Initialize the state information in data
 */
 static void main_init(ShellState *data) {
-	data->normalMode = data->cMode = data->mode = RenderMode::DUCKBOX;
+        data->normalMode = data->cMode = data->mode = RenderMode::DUCKBOXPLUS;
 	data->max_rows = 40;
 	data->colSeparator = SEP_Column;
 	data->rowSeparator = SEP_Row;
